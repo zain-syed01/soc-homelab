@@ -1,3 +1,7 @@
+# Vagrant metadata and state
+.vagrant/
+*.log
+*.box
 
 # OS generated files
 Thumbs.db

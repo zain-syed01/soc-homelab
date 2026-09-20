@@ -1,6 +1,6 @@
-# Enterprise Detection & Response Security Operations Homelab
+# Enterprise Detection & Response: SOC Homelab
 
-A fully virtualized Security Operations Center (SOC) and adversary emulation environment built with Vagrant, VirtualBox, Active Directory, and Wazuh SIEM. This project models enterprise identity telemetry collection, detection engineering via custom XML rules, and MITRE ATT&CK technique validation.
+I built this virtualized Security Operations Center (SOC) to get hands-on experience with adversary emulation and detection engineering. Provisioned entirely through Vagrant, this environment models enterprise identity telemetry collection, custom Wazuh rule creation, and the validation of MITRE ATT&CK techniques.
 
 ---
 
@@ -9,36 +9,37 @@ A fully virtualized Security Operations Center (SOC) and adversary emulation env
 | Host | Operating System | IP Address | Role / Description |
 | :--- | :--- | :--- | :--- |
 | **`wazuh-server`** | Ubuntu 22.04 LTS | `192.168.56.10` | Wazuh Manager, OpenSearch Indexer, & Web Dashboard |
-| **`corp-dc01`** | Windows Server 2022 | `192.168.56.20` | Root Domain Controller (`corp.local`), Sysmon Telemetry Agent |
+| **`corp-dc01`** | Windows Server 2022 | `192.168.56.20` | Root Domain Controller (`corp.local`), Sysmon Agent |
 | **`kali-attacker`** | Kali Linux Rolling | `192.168.56.30` | Adversary Emulation & Penetration Testing Node |
 
-- **Virtualization & Automation:** Managed using Vagrant with VirtualBox host-only networking (`192.168.56.0/24`).
-- **Telemetry Pipelines:** WinRM, Windows Event Channel, Sysmon v15 (SwiftOnSecurity configuration), and Wazuh Agent 4.9.
+**Infrastructure Details:**
+- **Virtualization:** Managed via Vagrant using VirtualBox host-only networking (`192.168.56.0/24`).
+- **Telemetry Pipeline:** WinRM, Windows Event Channels, Sysmon v15 (with SwiftOnSecurity baseline), and Wazuh Agent 4.9.
 
 ---
 
-##  Implementation Milestones
+## Project Milestones
 
-- [x] Provisioned isolated host-only network infrastructure via automated `Vagrantfile`.
-- [x] Deployed and optimized Wazuh 4.9 stack (kernel virtual memory tuning `vm.max_map_count=262144` and swap allocation).
-- [x] Provisioned Windows Server 2022 and promoted to Active Directory Forest root (`corp.local`).
-- [x] Configured advanced auditing policies for Kerberos Ticket Operations and Windows Event Channels.
-- [x] Deployed Sysmon with SwiftOnSecurity detection configuration and integrated the Wazuh agent.
-- [x] Deployed Kali Linux attack node and verified cross-subnet routing.
-- [x] Emulated Kerberoasting attack (**MITRE ATT&CK T1558.003**) using Impacket.
-- [x] Authored custom Wazuh detection rule (`Rule ID: 100002`) alerting on RC4 (`0x17`) ticket encryption requests.
+- [x] Provisioned an isolated host-only network infrastructure via an automated `Vagrantfile`.
+- [x] Deployed and optimized the Wazuh 4.9 stack, including kernel virtual memory tuning (`vm.max_map_count=262144`) and swap allocation.
+- [x] Spun up Windows Server 2022 and promoted it to the Active Directory Forest root (`corp.local`).
+- [x] Configured advanced auditing policies for Kerberos Ticket Operations and Windows Event logs.
+- [x] Deployed Sysmon for granular process tracking and integrated the Wazuh agent to forward telemetry.
+- [x] Verified cross-subnet routing and connectivity from the Kali Linux attack node.
+- [x] Successfully emulated a Kerberoasting attack (**MITRE ATT&CK T1558.003**) using Impacket.
+- [x] Engineered a custom Wazuh detection rule (`Rule ID: 100002`) to trigger high-severity alerts on RC4 (`0x17`) ticket encryption requests.
 
 ---
 
-## 🔍 Adversary Emulation & Detection Engineering
+## Adversary Emulation & Detection Engineering
 
-### Scenario: Kerberoasting (MITRE ATT&CK T1558.003)
+### The Attack: Kerberoasting (MITRE ATT&CK T1558.003)
 - **Tactic:** Credential Access (TA0006)
 - **Technique:** Steal or Forge Kerberos Tickets (T1558.003)
-- **Adversary Action:** Authenticated as a standard domain user (`corp.local\vagrant`) from `192.168.56.30` and requested a Ticket Granting Service (TGS) ticket for service principal `MSSQLSvc/dc01.corp.local:1433` using legacy RC4-HMAC encryption.
+- **Execution:** Authenticating as a standard domain user (`corp.local\vagrant`) from the Kali node, I requested a Ticket Granting Service (TGS) ticket for the service principal `MSSQLSvc/dc01.corp.local:1433`. The request intentionally forced legacy RC4-HMAC encryption to extract a crackable ticket hash.
 
 ### Custom Detection Logic (`local_rules.xml`)
-Standard Windows logging treats Kerberos ticket requests as normal operational traffic. To surface adversary activity, a custom high-severity detection rule was implemented on the Wazuh Manager:
+By default, Windows logging treats Kerberos ticket requests as normal operational traffic. To surface this adversary activity, I wrote a custom high-severity detection rule on the Wazuh Manager to flag RC4 downgrade requests:
 
 ```xml
 <rule id="100002" level="10">
@@ -51,18 +52,22 @@ Standard Windows logging treats Kerberos ticket requests as normal operational t
   </mitre>
 </rule>
 
+```
 
-📸 Telemetry & Detection Evidence
-Wazuh SIEM Management Dashboard
+### 1. Wazuh SIEM Dashboard Deployment
+![Wazuh Dashboard Active](01_wazuh_dashboard_active.png)
 
+### 2. Active Directory Domain Controller Promotion
+![AD Domain Controller Promoted](02_ad_domain_controller_promoted.png)
 
-Active Directory Domain Controller Promotion
+### 3. Wazuh Agent Telemetry Integration
+![Wazuh Agent Active](03_wazuh_agent_active.png)
 
+### 4. Sysmon Telemetry Stream Analysis
+![Sysmon Telemetry Stream](04_sysmon_telemetry_stream.png)
 
-Active Endpoint Telemetry Link
+### 5. Kerberoasting Attack Execution (Impacket)
+![Kali Kerberoast Hash](05_kali_kerberoast_hash.png)
 
-
-Impacket Kerberoasting Ticket Extraction (Kali Linux)
-
-
-Wazuh Detection Trigger (Rule 100002 - Level 10)
+### 6. Wazuh Custom Rule Detection (Event ID 4769)
+![Wazuh Event 4769 Detection](06_wazuh_event_4769_detection.png)

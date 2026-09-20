@@ -55,19 +55,19 @@ By default, Windows logging treats Kerberos ticket requests as normal operationa
 ```
 
 ### 1. Wazuh SIEM Dashboard Deployment
-![Wazuh Dashboard Active](01_wazuh_dashboard_active.png)
+![Wazuh Dashboard Active](docs/screenshots/01_wazuh_dashboard_active.png)
 
 ### 2. Active Directory Domain Controller Promotion
-![AD Domain Controller Promoted](02_ad_domain_controller_promoted.png)
+![AD Domain Controller Promoted](docs/screenshots/02_ad_domain_controller_promoted.png)
 
 ### 3. Wazuh Agent Telemetry Integration
-![Wazuh Agent Active](03_wazuh_agent_active.png)
+![Wazuh Agent Active](docs/screenshots/03_wazuh_agent_active.png)
 
 ### 4. Sysmon Telemetry Stream Analysis
-![Sysmon Telemetry Stream](04_sysmon_telemetry_stream.png)
+![Sysmon Telemetry Stream](docs/screenshots/04_sysmon_telemetry_stream.png)
 
 ### 5. Kerberoasting Attack Execution (Impacket)
-![Kali Kerberoast Hash](05_kali_kerberoast_hash.png)
+![Kali Kerberoast Hash](docs/screenshots/05_kali_kerberoast_hash.png)
 
 ### 6. Wazuh Custom Rule Detection (Event ID 4769)
-![Wazuh Event 4769 Detection](06_wazuh_event_4769_detection.png)
+![Wazuh Event 4769 Detection](docs/screenshots/06_wazuh_event_4769_detection.png)
